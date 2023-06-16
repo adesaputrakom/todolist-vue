@@ -62,6 +62,11 @@ export default {
     }),
     handleSubmit() {
       if (this.enteredValue) {
+        //= validation
+        const isValid = this.validationData();
+        if (!isValid) {
+          return;
+        }
         if (!this.id) {
           this.addData();
         } else {
@@ -73,21 +78,22 @@ export default {
       this.id = null;
       this.enteredValue = "";
     },
+    validationData() {
+      const findData = this.todoList.find(
+        (item) => item.task === this.enteredValue
+      );
+      if (findData) {
+        this.$swal("warning", "item todo is exist !", "OK");
+        return false;
+      }
+      return true;
+    },
     addData() {
       const newTask = {
         id: uuidv1(),
         task: this.enteredValue,
         complete: false,
       };
-
-      //= validation
-      const findData = this.todoList.find(
-        (item) => item.task === this.enteredValue
-      );
-      if (findData) {
-        this.$swal("warning", "item todo is exist !", "OK");
-        return;
-      }
 
       this.todoList.push(newTask);
       this.orderData(this.todoList);
